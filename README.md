@@ -16,6 +16,7 @@ story2audio/
 ```
 
 ---
+🎥 **[Watch Demo Video](https://youtu.be/aKpjBG2RPDY)**
 
 ## 🚀 Quickstart
 
@@ -107,8 +108,6 @@ Tested on **RTX 3060 Ti (8 GB)**:
 ![Latency Plot](perf_graphs/avg_latency.png)
 ![Latency Plot](perf_graphs/p95_latency.png)
 
----
-🎧 [Listen to Sample Audio](dummy.wav)
 ---
 
 
