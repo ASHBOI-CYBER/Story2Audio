@@ -1,157 +1,179 @@
-# 🗣️ Story2Audio
+# Story2Audio Microservice
 
-**Convert any story text into expressive, multi-style speech using gRPC, REST, and Gradio UI.**
-
-![Latency Plot](perf_graphs/concurrency_vs_latency.png)
+**Convert any story text into expressive, multi-style speech via gRPC, REST, and Gradio.**
 
 ---
 
-## 📽️ Live Demo
+## 📁 Repository Layout
 
-Watch our demo video here:  
-[![Watch the video](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
-
-> Replace `YOUR_VIDEO_ID` with your actual YouTube video ID.
-
----
-
-## 📁 Project Structure
-
-```
 story2audio/
-├── proto/               # gRPC definitions
-├── server/              # gRPC server, TTS engine & REST gateway
-├── frontend/            # Gradio UI
-├── tests/               # Tests and benchmarks
-├── postman/             # Postman collection for REST API
-├── perf_graphs/         # Performance graphs (latency, concurrency, etc.)
-└── Dockerfile           # Containerized server
-```
+├── proto/ # gRPC definitions
+│ └── story2audio.proto
+├── server/ # gRPC server, TTS engine & REST gateway
+│ ├── main.py # gRPC server entrypoint
+│ ├── tts_engine.py # Parler-TTS Expresso wrapper
+│ ├── api.py # FastAPI REST → gRPC gateway
+│ └── requirements.txt
+├── frontend/ # Gradio UI
+│ ├── app.py
+│ └── requirements.txt
+├── tests/ # Unit, integration & performance benchmarks
+│ ├── test_server.py
+│ ├── test_integration.py
+│ └── tests.py # performance runner
+├── postman/ # Postman collection
+│ └── Story2Audio.postman_collection.json
+├── Dockerfile # Build & run gRPC server
+├── perf_graphs/ # (optional) generated latency plots
+│ └── concurrency_vs_latency.png
+└── README.md # ← you are here
 
 ---
 
 ## 🚀 Quickstart
 
-### 1. Clone the Repository
+### 1. Clone & enter
 
 ```bash
-git clone https://github.com/your-username/story2audio.git
+git clone <your-repo-url>
 cd story2audio
-```
-
----
-
-### 2. Run with Docker (gRPC only)
-
-```bash
+2. Docker (gRPC only)
+bash
+Copy
+Edit
 docker build -t story2audio .
 docker run -p 50051:50051 story2audio
-```
+# server listens on :50051
+3. Run gRPC + Gradio locally
+In one shell, start the gRPC server:
 
----
-
-### 3. Run Locally (gRPC + Gradio UI)
-
-**gRPC Server**
-
-```bash
+bash
+Copy
+Edit
 cd server
 pip install -r requirements.txt
 python main.py
-```
+In another shell, launch the frontend:
 
-**Gradio Frontend**
-
-```bash
+bash
+Copy
+Edit
 cd frontend
 pip install -r requirements.txt
 python app.py
-```
+Open your browser at http://127.0.0.1:7860 to try it.
 
-Open your browser at: [http://127.0.0.1:7860](http://127.0.0.1:7860)
+📡 REST ↔ gRPC Gateway (Postman)
+Start the FastAPI gateway:
 
----
-
-### 4. REST ↔ gRPC via FastAPI
-
-```bash
+bash
+Copy
+Edit
 cd server
+pip install -r requirements.txt
 uvicorn api:app --host 0.0.0.0 --port 8000 --reload
-```
+Import postman/Story2Audio.postman_collection.json into Postman.
 
-Then send a `POST` request to: `http://localhost:8000/generate`
+Send a POST to http://localhost:8000/generate with JSON body:
 
-**Sample JSON:**
-
-```json
+json
+Copy
+Edit
 {
   "story_text": "Once upon a time…",
   "voice": "Thomas",
   "speed": 1.0,
   "emotion": "happy"
 }
-```
+The response contains:
 
----
+audio_base64: Base64-encoded WAV data
 
-## 🧠 Architecture
+status_code, message
 
-- `proto/story2audio.proto`: gRPC message & service definitions
-- `server/main.py`: Async gRPC server
-- `server/tts_engine.py`: Parler-TTS model wrapper
-- `server/api.py`: FastAPI REST → gRPC gateway
-- `frontend/app.py`: Gradio UI
-- `tests/`: Unit, integration, and performance tests
+🛠️ Development Setup
+You can also run everything locally without Docker:
 
----
+bash
+Copy
+Edit
+# (Optional) create & activate venv
+python -m venv venv
+source venv/bin/activate    # macOS/Linux
+.\venv\Scripts\activate     # Windows
 
-## 📊 Performance
+# Install server dependencies & generate gRPC code
+pip install -r server/requirements.txt
+python -m grpc_tools.protoc -I./proto \
+  --python_out=./proto --grpc_python_out=./proto \
+  proto/story2audio.proto
 
-Tested on **RTX 3060 Ti (8 GB)**:
+# Install frontend dependencies
+pip install -r frontend/requirements.txt
+📖 Architecture
+proto/story2audio.proto
+gRPC service and messages: supports story_text, voice, speed, emotion.
 
-| Concurrency | Avg Latency (s) | P95 Latency (s) |
-|-------------|------------------|------------------|
-| 1           | 7.5              | 7.5              |
-| 5           | 30.2             | 31.6             |
-| 10          | 63.5             | 66.1             |
-| 20          | 115.0            | 120.7            |
+server/main.py
+Asynchronous gRPC server that routes requests to Story2AudioServicer.
 
-📈 See:  
-![Latency Plot](perf_graphs/concurrency_vs_latency.png)
+server/tts_engine.py
+Wraps the Parler-TTS Mini Expresso model for multi-speaker, multi-emotion synthesis, with sentence-level chunking for long inputs.
 
----
+server/api.py
+FastAPI app exposing a JSON/REST endpoint which forwards to gRPC.
 
-## 🔬 Testing
+frontend/app.py
+Gradio interface, lets users type text, pick voice & emotion, and play back the generated audio.
 
-```bash
-pytest tests/test_server.py           # Unit tests
-pytest tests/test_integration.py      # Integration tests
-python tests/tests.py > perf.csv      # Performance
-```
+tests/
 
----
+test_server.py & test_integration.py: unit and integration tests
 
-## 📌 Features
+tests.py: performance benchmark script (outputs CSV)
 
-- Multi-voice & emotion speech synthesis
-- REST, gRPC, and Gradio interfaces
-- Chunked synthesis for long text
-- FastAPI REST gateway
-- Docker-compatible
-- Postman API collection
+postman/
+Story2Audio Postman collection for manual API testing.
 
----
+📈 Performance
+Benchmarks on RTX 3060 Ti (8 GB):
 
-## 🎤 Voices & Emotions
+Concurrency	Avg Latency (s)	P95 Latency (s)
+1	7.5	7.5
+5	30.2	31.6
+10	63.5	66.1
+20	115.0	120.7
 
-- **Voices**: Jerry, Thomas, Elisabeth, Talia  
-- **Emotions**: e.g. “happy”, “sad”, “angry”, “laughing”, etc.
+(See perf_graphs/concurrency_vs_latency.png for a plotted curve.)
 
----
+📝 Limitations
+VRAM: ~7–8 GB GPU memory during inference; we free cache after each story.
 
-## 📄 License
+Input length: Supports up to ~1 000 words via paragraph & sentence chunking.
 
-- **Code**: MIT License  
-- **Model Weights**: [CC-BY-NC](https://creativecommons.org/licenses/by-nc/4.0/)  
-- **Model**: [Parler-TTS Mini Expresso](https://huggingface.co/parler-tts/parler-tts-mini-expresso)
+Voices & Emotions:
 
+Voices: Jerry, Thomas, Elisabeth, Talia
+
+Emotions: any descriptor (e.g. “sad”, “happy”, “confused”, “laughing”)
+
+🔗 Model & License
+Model: Parler-TTS Mini Expresso (parler-tts/parler-tts-mini-expresso on HuggingFace)
+
+Code License: MIT
+
+Model Weights License: CC-BY-NC
+
+✅ Testing
+Unit tests: pytest tests/test_server.py
+
+Integration: pytest tests/test_integration.py
+
+Performance:
+
+bash
+Copy
+Edit
+python tests/tests.py > perf.csv
+
+Happy storytelling!

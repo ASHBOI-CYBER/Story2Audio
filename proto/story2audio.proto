@@ -1,0 +1,19 @@
+syntax = "proto3";
+package story2audio;
+
+service Story2Audio {
+  rpc Generate(AudioRequest) returns (AudioResponse) {}
+}
+
+message AudioRequest {
+  string story_text = 1;
+  string voice      = 2;
+  float  speed      = 3;
+  string emotion    = 4;   // NEW: e.g. "sad", "happy", "confused"
+}
+
+message AudioResponse {
+  bytes  audio_data = 1;
+  int32  status_code = 2;
+  string message     = 3;
+}

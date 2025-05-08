@@ -1,0 +1,10 @@
+grpcio>=1.32.0
+grpcio-tools
+TTS
+scipy
+gradio
+fastapi
+uvicorn[standard]
+pandas
+matplotlib
+numpy

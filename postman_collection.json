@@ -1,0 +1,32 @@
+{
+  "info": {
+    "name": "Story2Audio API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generate Audio",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/generate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["generate"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"story_text\": \"Once upon a time…\",\n  \"voice\": \"Thomas\",\n  \"speed\": 1.0,\n  \"emotion\": \"happy\"\n}"
+        }
+      },
+      "response": []
+    }
+  ]
+}

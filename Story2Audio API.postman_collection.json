@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "f505a31f-14c2-4302-86e0-508932df09bc",
+		"name": "Story2Audio API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44660847",
+		"_collection_link": "https://ahmedkhan-4102363.postman.co/workspace/Ahmed-Khan's-Workspace~f62e34e5-9492-4098-8fc5-02a71b7d0151/collection/44660847-f505a31f-14c2-4302-86e0-508932df09bc?action=share&source=collection_link&creator=44660847"
+	},
+	"item": [
+		{
+			"name": "Generate Audio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Test: Check status code and response field\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"audio_base64 is present\", () => {\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.have.property(\"audio_base64\");\r",
+							"    pm.expect(json.audio_base64.length).to.be.greaterThan(100);\r",
+							"});\r",
+							"\r",
+							"const json = pm.response.json();\r",
+							"const b64 = json.audio_base64;\r",
+							"\r",
+							"pm.visualizer.set(`\r",
+							"  <audio controls autoplay>\r",
+							"    <source src=\"data:audio/wav;base64,{{b64}}\" type=\"audio/wav\" />\r",
+							"    Your browser doesn't support the audio element.\r",
+							"  </audio>\r",
+							"`, { b64 });\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/generate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"generate"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
