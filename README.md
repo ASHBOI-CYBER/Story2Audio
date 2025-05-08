@@ -2,19 +2,6 @@
 
 **Convert any story text into expressive, multi-style speech using gRPC, REST, and Gradio UI.**
 
-![Latency Plot](perf_graphs/concurrency_vs_latency.png)
-🎧 [Listen to Sample Audio](dummy.wav)
----
-
-## 📽️ Live Demo
-
-Watch our demo video here:  
-[![Watch the video](https://img.youtube.com/vi/YOUR_VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
-
-> Replace `YOUR_VIDEO_ID` with your actual YouTube video ID.
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -121,6 +108,9 @@ Tested on **RTX 3060 Ti (8 GB)**:
 ![Latency Plot](perf_graphs/p95_latency.png)
 
 ---
+🎧 [Listen to Sample Audio](dummy.wav)
+---
+
 
 ## 🔬 Testing
 
