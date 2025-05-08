@@ -117,7 +117,7 @@ Tested on **RTX 3060 Ti (8 GB)**:
 | 20          | 115.0            | 120.7            |
 
 📈 See:  
-![Latency Plot](avg_latency.png)
+![Latency Plot](perf_graphs/avg_latency.png)
 
 ---
 
